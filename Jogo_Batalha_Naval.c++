@@ -7,113 +7,113 @@
 #define navios 5
 
 //Parte de fazer a tabela
-void initialize_board(char board[linhas][colunas]) {
+void inicializarTabuleiro(char tabuleiro1[linhas][colunas]) {
     int i, j;
     for (i = 0; i < linhas; i++) {
         for (j = 0; j < colunas; j++) {
-            board[i][j] = '-';
+            tabuleiro1[i][j] = '-';
         }
     }
 }
 
-void print_board(char board[linhas][colunas]) {
+void exibirTabuleiro1(char Tabuleiro1[linhas][colunas]) {
     int i, j;
     printf("  ");
     for (i = 0; i < colunas; i++) {
-        printf("%d ", i);
+        printf("%d ", i + 1);
     }
     printf("\n");
+
     for (i = 0; i < linhas; i++) {
         printf("%c ", 'A' + i);
         for (j = 0; j < colunas; j++) {
-            printf("%c ", board[i][j]);
+            printf("%c ", Tabuleiro1[i][j]);
         }
         printf("\n");
     }
 }
 //Função para colocar navios
-void place_navios(char board[linhas][colunas]) {
-    int i, j, count = 0, row, col;
+void colocarNavios(char Tabuleiro[linhas][colunas]) {
+    int i, j, count = 0, linha, coluna;
     char c;
     while (count < navios) {
-        printf("Enter row and column for ship %d (length %d): ", count + 1, navios - count);
-        scanf(" %c %d", &c, &col);
-        row = c - 'A';
-        col--;
-        if (row < 0 || row >= linhas || col < 0 || col >= colunas) {
-            printf("Invalid row or column!\n");
-        } else if (board[row][col] != '-') {
-            printf("There is already a ship there!\n");
+        printf("coloque a linha e a coluna para colocar o navil %d (comprimento %d): ", count + 1, navios - count);
+        scanf(" %c %d", &c, &coluna);
+
+        linha = c - 'A';
+        coluna--;
+        if (linha < 0 || linha >= linhas || coluna < 0 || coluna >= colunas) {
+            printf("linha ou coluna inválida!\n");
+        } else if (Tabuleiro[linha][coluna] != '-') {
+            printf("já existe um navil ai!\n");
         } else {
-            board[row][col] = 'S';
+            Tabuleiro[linha][coluna] = 'S';
             for (i = 1; i < navios - count; i++) {
-                if (row + i < linhas && board[row + i][col] == '-') {
-                    board[row + i][col] = 'S';
-                } else if (row - i >= 0 && board[row - i][col] == '-') {
-                    board[row - i][col] = 'S';
-                } else if (col + i < colunas && board[row][col + i] == '-') {
-                    board[row][col + i] = 'S';
-                } else if (col - i >= 0 && board[row][col - i] == '-') {
-                    board[row][col - i] = 'S';
+                if (linha + i < linhas && Tabuleiro[linha + i][coluna] == '-') {
+                    Tabuleiro[linha + i][coluna] = 'S';
+                } else if (linha - i >= 0 && Tabuleiro[linha - i][coluna] == '-') {
+                    Tabuleiro[linha - i][coluna] = 'S';
+                } else if (coluna + i < colunas && Tabuleiro[linha][coluna + i] == '-') {
+                    Tabuleiro[linha][coluna + i] = 'S';
+                } else if (coluna - i >= 0 && Tabuleiro[linha][coluna - i] == '-') {
+                    Tabuleiro[linha][coluna - i] = 'S';
                 } else {
-                    printf("Cannot place ship there!\n");
-                    board[row][col] = '-';
+                    printf("não é possível colocar o navil ai!\n");
+                    Tabuleiro[linha][coluna] = '-';
                     i = navios;
                 }
             }
-            if (board[row][col] == 'S') {
-                count++;
-            }
+            
         }
-        print_board(board);
+        exibirTabuleiro(Tabuleiro);
     }
 }
 
-int check_shot(char board[linhas][colunas], int row, int col) {
-    if (board[row][col] == 'S') {
-        board[row][col] = 'X';
+int check_shot(char board[linhas][colunas], int linha, int col) {
+    if (board[linha][col] == 'S') {
+        board[linha][col] = 'X';
         return 1;
     } else {
-        board[row][col] = 'O';
+        board[linha][col] = 'O';
         return 0;
     }
 }
 
 int main() {
     char player1_board[linhas][colunas], player2_board[linhas][colunas];
-    int i, j, row, col, shots = 0, hits = 0, player = 1;
+    int i, j, linha, col, shots = 0, hits = 0, player = 1;
     char c;
     srand(time(NULL));
-    initialize_board(player1_board);
-    initialize_board(player2_board);
+    inicializarTabuleiro(player1_board);
+    inicializarTabuleiro(player2_board);
     printf("Battleship Game\n");
     printf("Player 1, place your navios:\n");
-    place_navios(player1_board);
+    exibirTabuleiro(player1_board);
     printf("Player 2, place your navios:\n");
-    place_navios(player2_board);
+    exibirTabuleiro(player2_board);
     do {
         printf("\nPlayer %d's board:\n", player);
         if (player == 1) {
-            print_board(player2_board);
+           exibirTabuleiro(player2_board);
         } else {
-            print_board(player1_board);
+            exibirTabuleiro(player1_board);
         }
-        printf("Player %d, enter row and column to shoot: ", player);
+        printf("Player %d, enter linha and column to shoot: ", player);
         scanf(" %c %d", &c, &col);
-        row = c - 'A';
+        linha = c - 'A';
         col--;
-        if (row < 0 || row >= linhas || col < 0 || col >= colunas) {
+        if (linha < 0 || linha >= linhas || col < 0 || col >= colunas) {
             printf("Invalid row or column!\n");
         } else {
             if (player == 1) {
-                if (check_shot(player2_board, row, col)) {
+                if (check_shot(player2_board, linha, col)) {
                     printf("Hit!\n");
                     hits++;
                 } else {
                     printf("Miss!\n");
                 }
             } else {
-                if (check_shot(player1_board, row, col)) {
+                if (check_shot(player1_board, linha, col)) {
                     printf("Hit!\n");
                     hits++;
                 } else {
