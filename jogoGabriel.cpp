@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 #include <locale.h>
@@ -6,7 +5,7 @@
 #define linhas 10
 #define colunas 10
 #define navios 5
-
+//exibir tabuleiro ao iniciar o jogo
 void inicializarTabuleiro1(char tabuleiro1[linhas][colunas]) {
     for (int i = 0; i < linhas; ++i) {
         for (int j = 0; j < colunas; ++j) {
@@ -30,7 +29,22 @@ void exibirTabuleiro1(char tabuleiro1[linhas][colunas]) {
         printf("\n");
     }
 }
+//parte da máquina
+// Função para posicionar os navios da máquina aleatóriamente
+void posicionarNaviosMaquina(char tabuleiro[linhas][colunas]) {
+    printf("A máquina está posicionando seus navios...\n");
+    srand(time(NULL));
+    for (int i = 0; i < navios; i++) {
+        int linha, coluna;
+        do {
+            linha = rand() % linhas;
+            coluna = rand() % colunas;
+        } while (tabuleiro[linha][coluna] != '-');
+        tabuleiro[linha][coluna] = 'M';
+    }
+}
 
+//Parte de fazer o tabuleiro da posição onde está os návios do jogador
 void inicializarTabuleiro(char tabuleiro[linhas][colunas]) {
     for (int i = 0; i < linhas; ++i) {
         for (int j = 0; j < colunas; ++j) {
@@ -54,7 +68,7 @@ void exibirTabuleiro(char tabuleiro[linhas][colunas]) {
         printf("\n");
     }
 }
-
+//Função para o jogador colocar navios
 void colocarNavios(char tabuleiro[linhas][colunas]) {
     int i, j, count = 0, linha, coluna;
     char c;
@@ -62,9 +76,12 @@ void colocarNavios(char tabuleiro[linhas][colunas]) {
         printf("Coloque linha e coluna para colocar o navio %d (comprimento %d): ", count + 1, navios - count);
         scanf(" %c %d", &c, &coluna);
 
-        linha = c - 'A';
-        coluna--;
-
+        linha = c - 'A';  /*Esta linha calcula a diferença entre o valor da variável c e o valor correspondente 
+                            ao caractere 'A' na tabela ASCII. Isso é feito subtraindo o valor do caractere 'A' do valor do caractere armazenado em c. 
+                            O resultado é atribuído à variável linha. Essa operação é frequentemente utilizada para converter um caractere em um valor
+                            numérico que representa sua posição relativa no alfabeto.*/
+                            
+        coluna--;//Esta linha decrementa o valor da variável coluna em 1 unidade. O operador -- é o operador de decremento em C, e ele reduz o valor da variável em 1.
         if (linha < 0 || linha >= linhas || coluna < 0 || coluna >= colunas) {
             printf("Linha ou coluna inválida!\n");
         } else if (tabuleiro[linha][coluna] != '-') {
@@ -93,20 +110,7 @@ void colocarNavios(char tabuleiro[linhas][colunas]) {
         exibirTabuleiro(tabuleiro);
     }
 }
-
-void maquinaColocarNavios(char tabuleiro[linhas][colunas]) {
-    int count = 0;
-    while (count < navios) {
-        int linha = rand() % linhas;
-        int coluna = rand() % colunas;
-
-        if (tabuleiro[linha][coluna] == '-') {
-            tabuleiro[linha][coluna] = 'S';
-            count++;
-        }
-    }
-}
-
+//verificar aonde foi disparado se estiver com 'S' marcar 'X' para dizer que foi atingido, senão coloca 'O' para dizer que errou e deixar marcado
 int verificarTiro(char tabuleiro[linhas][colunas], int linha, int coluna) {
     if (tabuleiro[linha][coluna] == 'S') {
         tabuleiro[linha][coluna] = 'X';
@@ -119,63 +123,54 @@ int verificarTiro(char tabuleiro[linhas][colunas], int linha, int coluna) {
 
 int main() {
     setlocale(LC_ALL, "Portuguese");
-    char tabuleiro1[linhas][colunas], jogador_board[linhas][colunas], maquina_board[linhas][colunas];
-    int linha, coluna, shots = 0, hits = 0, jogador = 1;
+    char tabuleiro1[linhas][colunas], player1_board[linhas][colunas], player2_board[linhas][colunas];
+    int i, j, linha, coluna, shots = 0, hits = 0, player = 1;
     char c;
     inicializarTabuleiro1(tabuleiro1);
     exibirTabuleiro1(tabuleiro1);
     srand(time(NULL));
-    inicializarTabuleiro(jogador_board);
-    inicializarTabuleiro(maquina_board);
+    inicializarTabuleiro(player1_board);
+    inicializarTabuleiro(player2_board);
     printf("Jogo de Batalha Naval\n");
-    printf("Jogador, Coloque seus navios:\n");
-    colocarNavios(jogador_board);
-    printf("Aguarde enquanto a máquina posiciona seus navios...\n");
-    maquinaColocarNavios(maquina_board);
-    
+    printf("Jogador1, Coloque seus navios:\n");
+    colocarNavios(player1_board);
+    printf("Jogador2, Coloque seus navios:\n");
+    colocarNavios(player2_board);
     do {
-        printf("\njogador's tabuleiro:\n");
-        exibirTabuleiro(jogador_board);
-        printf("\nMáquina's tabuleiro:\n");
-        exibirTabuleiro(tabuleiro1);
-
-        if (jogador == 1) {
-            printf("jogador, enter linha and column to shoot: ");
-            scanf(" %c %d", &c, &coluna);
-            linha = c - 'A';
-            coluna--;
+        printf("\nPlayer %d's tabuleiro:\n", player);
+        if (player == 1) {
+            exibirTabuleiro(player2_board);
         } else {
-            printf("Aguarde enquanto a máquina decide o tiro...\n");
-            linha = rand() % linhas;
-            coluna = rand() % colunas;
+            exibirTabuleiro(player1_board);
         }
-
+        printf("Player %d, enter linha and column to shoot: ", player);
+        scanf(" %c %d", &c, &coluna);
+        linha = c - 'A';
+        coluna--;
         if (linha < 0 || linha >= linhas || coluna < 0 || coluna >= colunas) {
             printf("Invalid linha or column!\n");
         } else {
-            if (jogador == 1) {
-                if (verificarTiro(maquina_board, linha, coluna)) {
+            if (player == 1) {
+                if (verificarTiro(player2_board, linha, coluna)) {
                     printf("Hit!\n");
                     hits++;
                 } else {
                     printf("Miss!\n");
                 }
             } else {
-                if (verificarTiro(jogador_board, linha, coluna)) {
-                    printf("Máquina acertou!\n");
+                if (verificarTiro(player1_board, linha, coluna)) {
+                    printf("Hit!\n");
                     hits++;
                 } else {
-                    printf("Máquina errou!\n");
+                    printf("Miss!\n");
                 }
             }
             shots++;
             if (hits < navios) {
-                jogador = 3 - jogador;
+                player = 3 - player;
             }
         }
     } while (hits < navios);
-
-    printf("\njogador %d won in %d shots!\n", jogador, shots);
-
+    printf("\nPlayer %d won in %d shots!\n", player, shots);
     return 0;
 }
