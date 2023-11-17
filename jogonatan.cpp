@@ -69,7 +69,7 @@ void colocarNavios(char tabuleiro[linhas][colunas]) {
         if (linha < 0 || linha >= linhas || coluna < 0 || coluna >= colunas) {
             printf("Linha ou coluna invalida!\n");
         } else if (tabuleiro[linha][coluna] != '-') {
-            printf("Já existe um navio ai!\n");
+            printf("JÃ¡ existe um navio ai!\n");
         } else {
             tabuleiro[linha][coluna] = 'S';
             for (i = 1; i < navios - count; i++) {
@@ -82,7 +82,7 @@ void colocarNavios(char tabuleiro[linhas][colunas]) {
                 } else if (coluna - i >= 0 && tabuleiro[linha][coluna - i] == '-') {
                     tabuleiro[linha][coluna - i] = 'S';
                 } else {
-                    printf("Não é possivel colocar o navio ai\n");
+                    printf("NÃ£o Ã© possivel colocar o navio ai\n");
                     tabuleiro[linha][coluna] = '-';
                     i = navios;
                 }
@@ -170,7 +170,7 @@ int main() {
                 }
             } else {
                 if (verificarTiro(jogador_board, linha, coluna)) {
-                    printf("Você foi atingido! Maquina acertou!\n");
+                    printf("VocÃª foi atingido! Maquina acertou!\n");
                     hits++;
                     sleep(3);
                 } else {
