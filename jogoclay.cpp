@@ -32,6 +32,7 @@ void exibirTabuleiro1(char tabuleiro1[linhas][colunas]) {
 }
 //parte da máquina
 // Função para posicionar os navios da máquina aleatóriamente
+// Função para posicionar os navios da máquina automaticamente
 void posicionarNaviosMaquina(char tabuleiro[linhas][colunas]) {
     printf("A máquina está posicionando seus navios...\n");
     srand(time(NULL));
@@ -42,8 +43,23 @@ void posicionarNaviosMaquina(char tabuleiro[linhas][colunas]) {
             coluna = rand() % colunas;
         } while (tabuleiro[linha][coluna] != '-');
         tabuleiro[linha][coluna] = 'M';
+        for (int j = 1; j < navios - i; j++) {
+            if (linha + j < linhas && tabuleiro[linha + j][coluna] == '-') {
+                tabuleiro[linha + j][coluna] = 'M';
+            } else if (linha - j >= 0 && tabuleiro[linha - j][coluna] == '-') {
+                tabuleiro[linha - j][coluna] = 'M';
+            } else if (coluna + j < colunas && tabuleiro[linha][coluna + j] == '-') {
+                tabuleiro[linha][coluna + j] = 'M';
+            } else if (coluna - j >= 0 && tabuleiro[linha][coluna - j] == '-') {
+                tabuleiro[linha][coluna - j] = 'M';
+            } else {
+                i--;  // Se não for possível posicionar o navio, decrementa o índice e tenta novamente.
+                break;
+            }
+        }
     }
 }
+
 
 //Parte de fazer o tabuleiro da posição onde está os návios do jogador
 void inicializarTabuleiro(char tabuleiro[linhas][colunas]) {
@@ -69,6 +85,34 @@ void exibirTabuleiro(char tabuleiro[linhas][colunas]) {
         printf("\n");
     }
 }
+/*verificar aonde foi disparado se estiver com 'S' marcar 'X' para dizer que
+foi atingido, senão coloca 'O' para dizer que errou e deixar marcado*/
+int verificarTiro(char tabuleiro[linhas][colunas], int linha, int coluna) {
+    if (tabuleiro[linha][coluna] == 'S') {
+        tabuleiro[linha][coluna] = 'X';
+        return 1;
+    } else {
+        tabuleiro[linha][coluna] = 'O';
+        return 0;
+    }
+}
+
+void fazerTiroMaquina(char tabuleiro[linhas][colunas]) {
+    int linha, coluna;
+    do {
+        linha = rand() % linhas;
+        coluna = rand() % colunas;
+    } while (tabuleiro[linha][coluna] == 'X' || tabuleiro[linha][coluna] == 'O');
+    
+    printf("A máquina atira em %c%d: ", 'A' + linha, coluna + 1);
+
+    if (verificarTiro(tabuleiro, linha, coluna)) {
+        printf("Hit!\n");
+    } else {
+        printf("Miss!\n");
+    }
+}
+
 //Função para o jogador colocar navios
 void colocarNavios(char tabuleiro[linhas][colunas]) {
     int i, j, count = 0, linha, coluna;
@@ -111,16 +155,6 @@ void colocarNavios(char tabuleiro[linhas][colunas]) {
         exibirTabuleiro(tabuleiro);
     }
 }
-//verificar aonde foi disparado se estiver com 'S' marcar 'X' para dizer que foi atingido, senão coloca 'O' para dizer que errou e deixar marcado
-int verificarTiro(char tabuleiro[linhas][colunas], int linha, int coluna) {
-    if (tabuleiro[linha][coluna] == 'S') {
-        tabuleiro[linha][coluna] = 'X';
-        return 1;
-    } else {
-        tabuleiro[linha][coluna] = 'O';
-        return 0;
-    }
-}
 
 int main() {
     setlocale(LC_ALL, "Portuguese");
@@ -135,8 +169,9 @@ int main() {
     printf("Jogo de Batalha Naval\n");
     printf("Jogador1, Coloque seus navios:\n");
     colocarNavios(player1_board);
-    printf("Jogador2, Coloque seus navios:\n");
-    colocarNavios(player2_board);
+    printf("Jogador2, A máquina está posicionando seus navios...\n");
+    posicionarNaviosMaquina(player2_board);
+
     do {
         printf("\nPlayer %d's tabuleiro:\n", player);
         if (player == 1) {
@@ -144,10 +179,18 @@ int main() {
         } else {
             exibirTabuleiro(player1_board);
         }
-        printf("Player %d, enter linha and column to shoot: ", player);
-        scanf(" %c %d", &c, &coluna);
-        linha = c - 'A';
-        coluna--;
+
+        if (player == 1) {
+            printf("Player %d, enter linha and column to shoot: ", player);
+            scanf(" %c %d", &c, &coluna);
+            linha = c - 'A';
+            coluna--;
+        } else {
+            fazerTiroMaquina(player1_board);
+            linha = 0; // Atribuir um valor qualquer, pois não será utilizado para o jogador 2 (máquina).
+            coluna = 0; // Atribuir um valor qualquer, pois não será utilizado para o jogador 2 (máquina).
+        }
+
         if (linha < 0 || linha >= linhas || coluna < 0 || coluna >= colunas) {
             printf("Invalid linha or column!\n");
         } else {
@@ -172,6 +215,7 @@ int main() {
             }
         }
     } while (hits < navios);
+
     printf("\nPlayer %d won in %d shots!\n", player, shots);
     return 0;
 }
