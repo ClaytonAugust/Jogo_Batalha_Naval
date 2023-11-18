@@ -81,7 +81,7 @@ void colocarNavios(char tabuleiro[linhas][colunas]) {
         if (linha < 0 || linha >= linhas || coluna < 0 || coluna >= colunas) {
             printf("Linha ou coluna invalida!\n");
         } else if (tabuleiro[linha][coluna] != '-') {
-            printf("J· existe um navio ai!\n");
+            printf("J√° existe um navio ai!\n");
         } else {
             tabuleiro[linha][coluna] = 'S';
             for (i = 1; i < navios - count; i++) {
@@ -94,7 +94,7 @@ void colocarNavios(char tabuleiro[linhas][colunas]) {
                 } else if (coluna - i >= 0 && tabuleiro[linha][coluna - i] == '-') {
                     tabuleiro[linha][coluna - i] = 'S';
                 } else {
-                    printf("N„o È possivel colocar o navio ai\n");
+                    printf("N√£o √© possivel colocar o navio ai\n");
                     tabuleiro[linha][coluna] = '-';
                     i = navios;
                 }
@@ -108,7 +108,7 @@ void colocarNavios(char tabuleiro[linhas][colunas]) {
 }
 
 void posicionarNaviosMaquina(char tabuleiro[linhas][colunas]) {
-    printf("A m·quina est· posicionando seus navios...\n");
+    printf("A m√°quina est√° posicionando seus navios...\n");
     sleep(2);
     for (int i = 0; i < navios; i++) {
         int linha, coluna;
@@ -150,7 +150,7 @@ int verificarTiro(char tabuleiro[linhas][colunas], int linha, int coluna) {
 int main() {
     setlocale(LC_ALL, "Portuguese");
     char tabuleiro_visivel[linhas][colunas], jogador_tabuleiro[linhas][colunas], maquina_tabuleiro[linhas][colunas];
-    int linha, coluna, acertos_jogador = 0, acertos_maquina = 0, jogador_tiros = 0, maquina_tiros = 0, hits = 0, jogador = 1;
+    int linha, coluna, acertos_jogador = 0, acertos_maquina = 0, jogador_turnos = 0, maquina_turnos = 0, hits = 0, jogador = 1;
     char c;
     inicializarTabuleiroVisivel(tabuleiro_visivel);
     exibirTabuleiroVisivel(tabuleiro_visivel);
@@ -202,7 +202,7 @@ int main() {
             }else{
                 if (verificarTiro(jogador_tabuleiro, linha, coluna)) {
                     sleep(2);
-					printf("VocÍ foi atingido! Maquina acertou!\n");
+					printf("Voc√™ foi atingido! Maquina acertou!\n");
                     acertos_maquina++;
                 } else {
                     sleep(2);
