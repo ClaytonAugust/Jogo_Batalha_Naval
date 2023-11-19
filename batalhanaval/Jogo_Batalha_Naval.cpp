@@ -243,6 +243,7 @@ int main() {
         } while(1);
     }
     if (resposta == 2) {
+    	int status = system("atualizar_ranking.exe");
         FILE *ranking = fopen("ranking.txt", "r");
         char caractere;
         while ((caractere = fgetc(ranking)) != EOF) {
