@@ -95,8 +95,10 @@ void colocarNavios(char tabuleiro[linhas][colunas]) {
         printf("Coloque linha e coluna para colocar o navio %d (comprimento %d): ", count + 1, navios - count); // Vai falando o comprimento do navio e diminuindo conforme o contador.
         scanf(" %c %d", &c, &coluna); // Armazena a linha e a coluna
 
-        linha = c - 'A';
-        coluna--; // Diminui a coluna.
+        linha = c - 'A';/*Calcula a diferença entre o valor da variável c e o valor correspondente ao caractere
+			'A' na tabela ASCII. Isso é feito subtraindo o valor do caractere 'A' do valor do caractere armazenado em c.
+ 			O resultado é atribuído à variável linha.*/
+        coluna--; //Decrementa o valor da variável em 1 unidade.
 
         if (linha < 0 || linha >= linhas || coluna < 0 || coluna >= colunas) { // Se não for dito um número de 1 até 10 ou uma coluna de A até F.
             printf("Linha ou coluna inválida!\n"); 
